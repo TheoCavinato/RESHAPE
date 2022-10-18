@@ -24,6 +24,5 @@ void tool::runMainTask() {
 	rec_file.close();
 	
 	//step1: Read VCF and output mixed haplotypes 
-	std::cout << "ohla" << std::endl;
 	GEN.readAndWriteGenotypes(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM);
 }

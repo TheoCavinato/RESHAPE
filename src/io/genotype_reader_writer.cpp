@@ -67,12 +67,15 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
 	vector<int> haplotypes_positions(n_samples*2);
 	for(int i = 0; i<n_samples*2; i++) haplotypes_positions[i]=i;
 	std::shuffle(haplotypes_positions.begin(), haplotypes_positions.end(), rng.getEngine());
-	for(int i = 0; i<n_samples*2; i++) printf("%d\n", haplotypes_positions[i]);
 
 	//define iterators for gmap's positions in bp, in cM and for simulated recombination sites
 	int itr_gmap=0, itr_recsite=0;
 	int max_gmap=gmap_pos_bp.size()-1, max_recsite=recombination_sites.size();
 
+	int SNPs = 0;
+
+	vrb.bullet("Shuffling start...");
+	tac.clock();
 	while((nset=bcf_read(fp, hdr, rec))==0) {
 		bcf_unpack(rec, BCF_UN_STR);
 
@@ -107,9 +110,11 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
 			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[haplotypes_positions[i]]));
 			bcf_update_genotypes(out_hdr, rec, genotypes_out, n_samples*2);
 			if (bcf_write(out_fp, out_hdr, rec) < 0) vrb.error("Failing to write VCF/record");
+			SNPs+=1;
+			if (SNPs%100000==0){
+				vrb.bullet(to_string(SNPs) + " SNPs written in " + stb.str(tac.rel_time()*1.0/1000, 2) + "s");
+			}
 
-			for(int i =0; i<n_samples*2; i++) printf("%d ", haplotypes_positions[i]);
-			printf("\n");
 		}
 
 	}
@@ -118,4 +123,5 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
     if ( hts_close(out_fp)!=0 ) vrb.error("Close failed: " + fvcfout+ ".");
     bcf_hdr_destroy(hdr);
     if ( hts_close(fp)!=0 ) vrb.error("Close failed: " + fvcfin + ".");
+	vrb.bullet("Shuffling done!");
 };
