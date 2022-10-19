@@ -16,12 +16,14 @@ void tool::runMainTask() {
 
 	//step0 bis: juste pour la validation
 	ofstream rec_file;
-	rec_file.open("rec_sites.txt");
-	for (auto i : REC_SITES.recombination_sites_cM){
-		rec_file << i;
-		rec_file << '\n';
+	if (options.count("recvalid")){
+		rec_file.open(options["recvalid"].as <string>());
+		for (auto i : REC_SITES.recombination_sites_cM){
+			rec_file << i;
+			rec_file << '\n';
+		}
+		rec_file.close();
 	}
-	rec_file.close();
 	
 	//step1: Read VCF and output mixed haplotypes 
 	GEN.readAndWriteGenotypes(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM);
