@@ -16,7 +16,7 @@ void tool::declare_options() {
 	bpo::options_description opt_output ("Output files");
 	opt_output.add_options()
 			("output", bpo::value< string >(), "Output file")
-			("recvalid", bpo::value< string >(), "Output recombination sites");
+			("recvalid", bpo::value< string >()->default_value("None"), "Output recombination sites")
 			("log", bpo::value< string >(), "Log file");
 
 	descriptions.add(opt_base).add(opt_input).add(opt_output);

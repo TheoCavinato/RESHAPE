@@ -32,7 +32,7 @@ public:
     ~genotype_reader_writer();
 
     //ROUTINES
-    void readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites);
+    void readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
 
 private:
     double linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2);

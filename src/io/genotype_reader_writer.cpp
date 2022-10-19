@@ -30,7 +30,7 @@ double genotype_reader_writer::linear_conversion(double X, double cM_1, double c
 	return (((double)X-(double)bp_1)/((double)bp_2 - (double)bp_1))*( cM_2 - cM_1)+ cM_1;
 }
 
-void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites){
+void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec){
 	//-----------INITIALISE VCF TO READ---------------//
 	//Create input file descriptors
 	vrb.bullet("Creating file descriptor");
@@ -61,6 +61,13 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
 
 	//to write VCF
 	int * genotypes_out = (int*)malloc(n_samples*2*sizeof(int));
+
+	//-----------IF YOU WANT LOGS OF THE RECOMBINATION SITES---------------//
+	ofstream rec_file;
+	if (out_rec!="None"){
+		rec_file.open(out_rec);
+	}
+	
 
 	//-----------READ VCF AND WRITE MIXED HAPLOTYPES TO NEW ONE---------------//
 	//shuffle haplotypes
@@ -104,7 +111,16 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
 				int first_element=rng.getInt(n_samples*2), second_element=rng.getInt(n_samples*2);
 				haplotypes_positions[first_element] = temp_haplotypes_positions[second_element];
 				haplotypes_positions[second_element] = temp_haplotypes_positions[first_element];
+
+				//step1. bis Write the recombination event if --recvalid
+				if (out_rec!="None"){
+					rec_file << rec->pos;
+					rec_file << "\n";
+				}
 			}
+
+			//step1. bis Write the recombination event if --recvalid
+
 
 			//step2. Write genotypes in new order
 			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[haplotypes_positions[i]]));
@@ -123,5 +139,9 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
     if ( hts_close(out_fp)!=0 ) vrb.error("Close failed: " + fvcfout+ ".");
     bcf_hdr_destroy(hdr);
     if ( hts_close(fp)!=0 ) vrb.error("Close failed: " + fvcfin + ".");
+
+	if (out_rec!="None"){
+		rec_file.close();
+	}
 	vrb.bullet("Shuffling done!");
 };
