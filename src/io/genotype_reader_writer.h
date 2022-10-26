@@ -32,10 +32,12 @@ public:
     ~genotype_reader_writer();
 
     //ROUTINES
-    void readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
+    void encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
+    void decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
 
 private:
     double linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2);
+    void update_original_pos(vector<int> &orig_pos, vector<int> &haplo_pos);
 
 };
 

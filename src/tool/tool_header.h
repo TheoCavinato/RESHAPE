@@ -6,7 +6,6 @@
 #include <io/gmap_reader.h>
 #include <containers/recombination.h>
 #include <io/genotype_reader_writer.h>
-#include <io/decoder.h>
 #include <io/bcf_header_reader.h>
 
 class tool {
@@ -20,7 +19,6 @@ public:
 	recombination REC_SITES;
 	genotype_reader_writer GEN;
 	bcf_header_reader HREADER;
-	decoder DECODE;
 
 	//OUTPUT DATA
 
