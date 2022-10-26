@@ -36,6 +36,7 @@ public:
 
 private:
     double linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2);
+    void update_original_pos(vector<int> &orig_pos, vector<int> &haplo_pos);
 
 };
 

@@ -30,6 +30,20 @@ double decoder::linear_conversion(double X, double cM_1, double cM_2, int bp_1, 
 	return (((double)X-(double)bp_1)/((double)bp_2 - (double)bp_1))*( cM_2 - cM_1)+ cM_1;
 }
 
+
+void decoder::update_original_pos(vector<int> &orig_pos, vector<int> &haplo_pos){
+	for(int i = 0; i<haplo_pos.size(); i++){
+		int idx = 0;
+		for(auto j : haplo_pos){
+			if (i==j) {
+				orig_pos[i]  = idx;
+				break;
+			}
+			idx++;
+		}
+	}
+}
+
 void decoder::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec){
 	//-----------INITIALISE VCF TO READ---------------//
 	//Create input file descriptors
@@ -73,9 +87,11 @@ void decoder::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &
 	//find original haplotypes
 	//shuffling
 	vector<int> haplotypes_positions(n_samples*2);
+	vector<int> original_pos(n_samples*2);
 	for(int i = 0; i<n_samples*2; i++) haplotypes_positions[i]=i;
 	std::shuffle(haplotypes_positions.begin(), haplotypes_positions.end(), rng.getEngine());
 	//find original from shuffling result
+	/*
 	vector<int> original_pos(n_samples*2);
 	for(int i = 0; i<n_samples*2; i++){
 		int idx = 0;
@@ -87,12 +103,8 @@ void decoder::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &
 			idx++;
 		}
 	}
+	*/
 	//set numbers in original order
-	int idx=0;
-	for(auto pos : original_pos){
-		haplotypes_positions[idx]=pos;
-		idx++;
-	}
 	vrb.bullet("yoyoyo");
 	for(auto i : haplotypes_positions){
 		std::cout << i << std::endl;
@@ -143,8 +155,23 @@ void decoder::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &
 				}
 			}
 
+			//find original from shuffling result
+			/*
+			for(int i = 0; i<n_samples*2; i++){
+				int idx = 0;
+				for(auto j : haplotypes_positions){
+					if (i==j) {
+						original_pos[i]  = idx;
+						break;
+					}
+					idx++;
+				}
+			*/
+			update_original_pos(original_pos, haplotypes_positions);
+			
+
 			//step2. Write genotypes in new order
-			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[haplotypes_positions[i]]));
+			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[original_pos[i]]));
 			bcf_update_genotypes(out_hdr, rec, genotypes_out, n_samples*2);
 			if (bcf_write(out_fp, out_hdr, rec) < 0) vrb.error("Failing to write VCF/record");
 			SNPs+=1;
