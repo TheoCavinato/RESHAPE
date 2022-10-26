@@ -17,6 +17,7 @@ void tool::declare_options() {
 	opt_output.add_options()
 			("output", bpo::value< string >(), "Output file")
 			("recvalid", bpo::value< string >()->default_value("None"), "Output recombination sites")
+			("mode", bpo::value< string >()->default_value("encoding"), "Mode of the algorithm: encoding/decoding")
 			("log", bpo::value< string >(), "Log file");
 
 	descriptions.add(opt_base).add(opt_input).add(opt_output);

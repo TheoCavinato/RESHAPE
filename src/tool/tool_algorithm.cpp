@@ -15,5 +15,13 @@ void tool::runMainTask() {
 	REC_SITES.poisson_process(number_of_samples, number_of_generations, chromosome_size_M);
 
 	//step1: Read VCF and output mixed haplotypes 
-	GEN.readAndWriteGenotypes(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM, options["recvalid"].as <string>());
+	if (options["mode"].as <string>()=="encoding"){
+		GEN.readAndWriteGenotypes(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM, options["recvalid"].as <string>());
+	}
+	else if(options["mode"].as <string>()=="decoding"){
+		DECODE.readAndWriteGenotypes(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM, options["recvalid"].as <string>());
+	}
+	else{
+		vrb.error("Mode \"" + options["mode"].as <string>() + "\" unknown, please choose between encoding or decoding or leave default");
+	}
 }

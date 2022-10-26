@@ -20,17 +20,17 @@
  * SOFTWARE.
  ******************************************************************************/
 
-#include <io/genotype_reader_writer.h>
+#include <io/decoder.h>
 
-genotype_reader_writer::genotype_reader_writer(){}
+decoder::decoder(){}
 
-genotype_reader_writer::~genotype_reader_writer(){}
+decoder::~decoder(){}
 
-double genotype_reader_writer::linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2){
+double decoder::linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2){
 	return (((double)X-(double)bp_1)/((double)bp_2 - (double)bp_1))*( cM_2 - cM_1)+ cM_1;
 }
 
-void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec){
+void decoder::readAndWriteGenotypes(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec){
 	//-----------INITIALISE VCF TO READ---------------//
 	//Create input file descriptors
 	vrb.bullet("Creating file descriptor");
@@ -70,11 +70,30 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
 	
 
 	//-----------READ VCF AND WRITE MIXED HAPLOTYPES TO NEW ONE---------------//
-	//shuffle haplotypes
+	//find original haplotypes
+	//shuffling
 	vector<int> haplotypes_positions(n_samples*2);
 	for(int i = 0; i<n_samples*2; i++) haplotypes_positions[i]=i;
 	std::shuffle(haplotypes_positions.begin(), haplotypes_positions.end(), rng.getEngine());
-	//just to see
+	//find original from shuffling result
+	vector<int> original_pos(n_samples*2);
+	for(int i = 0; i<n_samples*2; i++){
+		int idx = 0;
+		for(auto j : haplotypes_positions){
+			if (i==j) {
+				original_pos[i]  = idx;
+				break;
+			}
+			idx++;
+		}
+	}
+	//set numbers in original order
+	int idx=0;
+	for(auto pos : original_pos){
+		haplotypes_positions[idx]=pos;
+		idx++;
+	}
+	vrb.bullet("yoyoyo");
 	for(auto i : haplotypes_positions){
 		std::cout << i << std::endl;
 	}
@@ -123,12 +142,6 @@ void genotype_reader_writer::readAndWriteGenotypes(string fvcfin, string fvcfout
 					rec_file << "\n";
 				}
 			}
-
-			//step TO SOLVE BUG -> ALLELE FREQUENCY DOES NOT WORK WHEN USING HIGH VALUES OF GENERATION NUMBERN, LETS UNDERSTAND WHY
-			// check that haplotype_positions contain all possible number
-
-			// check if new allele frequency is not the same anymore
-
 
 			//step2. Write genotypes in new order
 			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[haplotypes_positions[i]]));
