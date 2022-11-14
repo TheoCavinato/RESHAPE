@@ -16,10 +16,14 @@ void tool::runMainTask() {
 
 	//step1: Read VCF and output mixed haplotypes 
 	if (options["mode"].as <string>()=="encoding"){
-		GEN.encoding(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM, options["recvalid"].as <string>());
+		GEN.encoding(options["vcf"].as <string>(), options["output"].as <string>(),
+		GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM,
+		options["recvalid"].as <string>(), options["haploprint"].as <string>());
 	}
 	else if(options["mode"].as <string>()=="decoding"){
-		GEN.decoding(options["vcf"].as <string>(), options["output"].as <string>(), GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM, options["recvalid"].as <string>());
+		GEN.decoding(options["vcf"].as <string>(), options["output"].as <string>(),
+		GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM,
+		options["recvalid"].as <string>());
 	}
 	else{
 		vrb.error("Mode \"" + options["mode"].as <string>() + "\" unknown, please choose between encoding or decoding or leave default");

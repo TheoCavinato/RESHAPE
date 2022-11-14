@@ -30,7 +30,7 @@ double genotype_reader_writer::linear_conversion(double X, double cM_1, double c
 	return (((double)X-(double)bp_1)/((double)bp_2 - (double)bp_1))*( cM_2 - cM_1)+ cM_1;
 }
 
-void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec){
+void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo){
 	//-----------INITIALISE VCF TO READ---------------//
 	//Create input file descriptors
 	vrb.bullet("Creating file descriptor");
@@ -64,10 +64,13 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 
 	//-----------IF YOU WANT LOGS OF THE RECOMBINATION SITES---------------//
 	ofstream rec_file;
+	ofstream haplo_file;
 	if (out_rec!="None"){
 		rec_file.open(out_rec);
 	}
-	
+	if (out_haplo!="None"){
+		haplo_file.open(out_haplo);
+	}
 
 	//-----------READ VCF AND WRITE MIXED HAPLOTYPES TO NEW ONE---------------//
 	//shuffle haplotypes
@@ -120,6 +123,11 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 				}
 			}
 
+			if (out_haplo!="None"){
+				for(int i =  0; i<n_samples*2; i++){ haplo_file << haplotypes_positions[i] << " "; }
+				haplo_file << "\n";
+			}
+
 			//step TO SOLVE BUG -> ALLELE FREQUENCY DOES NOT WORK WHEN USING HIGH VALUES OF GENERATION NUMBERN, LETS UNDERSTAND WHY
 			// check that haplotype_positions contain all possible number
 
@@ -147,6 +155,10 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 	if (out_rec!="None"){
 		rec_file.close();
 	}
+	if (out_haplo!="None"){
+		haplo_file.close();
+	}	
+
 	vrb.bullet("Shuffling done!");
 };
 

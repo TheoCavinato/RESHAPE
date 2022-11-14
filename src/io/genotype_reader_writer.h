@@ -32,7 +32,7 @@ public:
     ~genotype_reader_writer();
 
     //ROUTINES
-    void encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
+    void encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo);
     void decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
 
 private:

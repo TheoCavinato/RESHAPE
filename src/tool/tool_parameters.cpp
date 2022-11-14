@@ -17,6 +17,7 @@ void tool::declare_options() {
 	opt_output.add_options()
 			("output", bpo::value< string >(), "Output file")
 			("recvalid", bpo::value< string >()->default_value("None"), "Output recombination sites")
+			("haploprint", bpo::value< string >()->default_value("None"), "Print haplotypes (used for validations)")
 			("mode", bpo::value< string >()->default_value("encoding"), "Mode of the algorithm: encoding/decoding")
 			("log", bpo::value< string >(), "Log file");
 
