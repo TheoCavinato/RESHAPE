@@ -8,13 +8,18 @@
 void tool::runMainTask() {
 	vrb.title("Compute main TASK");
 
-	//step0: Simulating recombination sites in cM using a Poisson Process
 	int number_of_samples = HREADER.n_samples;
 	int number_of_generations = options["gen"].as <int> ();
+
+	//step0: Shuffling of original haplotype order
+	GEN.set_n_samples(number_of_samples);
+	GEN.shuffling();
+
+	//step1: Simulating recombination sites in cM using a Poisson Process
 	double chromosome_size_M = GMAP.pos_cm.back()/100;
 	REC_SITES.poisson_process(number_of_samples, number_of_generations, chromosome_size_M);
 
-	//step1: Read VCF and output mixed haplotypes 
+	//step2: Read VCF and output mixed haplotypes 
 	if (options["mode"].as <string>()=="encoding"){
 		GEN.encoding(options["vcf"].as <string>(), options["output"].as <string>(),
 		GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM,

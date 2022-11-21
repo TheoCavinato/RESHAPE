@@ -27,11 +27,17 @@
 
 class genotype_reader_writer{
 public:
+    //DATA
+    int n_samples;
+    vector <int> haplotypes_positions;
+
     //CONSTRUCTOR/DESCTRUCTOR
     genotype_reader_writer();
     ~genotype_reader_writer();
 
     //ROUTINES
+    void set_n_samples(int number_of_samples);
+    void shuffling();
     void encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo);
     void decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
 

@@ -26,6 +26,17 @@ genotype_reader_writer::genotype_reader_writer(){}
 
 genotype_reader_writer::~genotype_reader_writer(){}
 
+void genotype_reader_writer::set_n_samples(int number_of_samples){
+	n_samples = number_of_samples;
+}
+
+void genotype_reader_writer::shuffling(){
+	for(int i = 0; i<n_samples*2; i++){
+		haplotypes_positions.push_back(i);
+	}
+	std::shuffle(haplotypes_positions.begin(), haplotypes_positions.end(), rng.getEngine());
+}
+
 double genotype_reader_writer::linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2){
 	return (((double)X-(double)bp_1)/((double)bp_2 - (double)bp_1))*( cM_2 - cM_1)+ cM_1;
 }
@@ -73,10 +84,6 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 	}
 
 	//-----------READ VCF AND WRITE MIXED HAPLOTYPES TO NEW ONE---------------//
-	//shuffle haplotypes
-	vector<int> haplotypes_positions(n_samples*2);
-	for(int i = 0; i<n_samples*2; i++) haplotypes_positions[i]=i;
-	std::shuffle(haplotypes_positions.begin(), haplotypes_positions.end(), rng.getEngine());
 
 	//define iterators for gmap's positions in bp, in cM and for simulated recombination sites
 	int itr_gmap=0, itr_recsite=0;
@@ -84,7 +91,7 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 
 	int SNPs = 0;
 
-	vrb.bullet("Encoding start...");
+	vrb.bullet("Encoding start...");Error:
 	tac.clock();
 	while((nset=bcf_read(fp, hdr, rec))==0) {
 		bcf_unpack(rec, BCF_UN_STR);
@@ -217,10 +224,7 @@ void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int>
 	//-----------READ VCF AND WRITE MIXED HAPLOTYPES TO NEW ONE---------------//
 	//find original haplotypes
 	//shuffling
-	vector<int> haplotypes_positions(n_samples*2);
 	vector<int> original_pos(n_samples*2);
-	for(int i = 0; i<n_samples*2; i++) haplotypes_positions[i]=i;
-	std::shuffle(haplotypes_positions.begin(), haplotypes_positions.end(), rng.getEngine());
 
 	//define iterators for gmap's positions in bp, in cM and for simulated recombination sites
 	int itr_gmap=0, itr_recsite=0;
