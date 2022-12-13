@@ -1,4 +1,3 @@
-
 #------------------------------------------------------------------------------# 
 # 1. Encode data
 #------------------------------------------------------------------------------# 
@@ -9,7 +8,7 @@ CHR=22
 INPUT_FILE=example_ref_panel.bcf
 MAP=maps/genetic_maps.b38/chr$CHR.b38.gmap.gz
 SEED=13245
-GEN=190
+GEN=128
 SHUFFLED=shuffled_ref_panel.bcf
 HAPLO=haplo_order.txt
 ./bin/haploshuffling --vcf $INPUT_FILE --region $CHR --output $SHUFFLED --map $MAP --seed $SEED --gen $GEN --haplo $HAPLO
@@ -57,5 +56,4 @@ diff $DECOMPUNSHUFF $DECOMPORI #should just return the dates of "bcftools view"
 rm $DECOMPORI $DECOMPUNSHUFF
 
 # remove generated files
-
 rm $SHUFFLED* $UNSHUFF* $HAPLO
