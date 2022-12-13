@@ -1,6 +1,6 @@
 
 #------------------------------------------------------------------------------# 
-# 1. Simulate data
+# 1. Encode data
 #------------------------------------------------------------------------------# 
 echo "ENCODING..."
 
@@ -58,4 +58,4 @@ rm $DECOMPORI $DECOMPUNSHUFF
 
 # remove generated files
 
-rm $SHUFFLED.* $UNSHUFF.*
+rm $SHUFFLED* $UNSHUFF* $HAPLO
