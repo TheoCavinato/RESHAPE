@@ -222,6 +222,7 @@ void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int>
 	//find original haplotypes
 	//shuffling
 	vector<int> original_pos(n_samples*2);
+	update_original_pos(original_pos, haplotypes_positions);
 
 	//define iterators for gmap's positions in bp, in cM and for simulated recombination sites
 	int itr_gmap=0, itr_recsite=0;
