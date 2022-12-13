@@ -59,7 +59,7 @@ void tool::check_options() {
 void tool::verbose_files() {
 	vrb.title("Files:");
 	vrb.bullet("Input VCF  : [" + options["vcf"].as < string > () + "]");
-	vrb.bullet("Number of generations: " + options["gen"].as < int > ());
+	vrb.bullet("Number of generations: " + to_string(options["gen"].as < int > ()));
 	vrb.bullet("Output TXT : [" + options["output"].as < string > () + "]");
 	if (options.count("log")) vrb.bullet("Output LOG : [" + options["log"].as < string > () + "]");
 }
