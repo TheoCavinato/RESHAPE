@@ -91,7 +91,7 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 
 	int SNPs = 0;
 
-	vrb.bullet("Encoding start...");Error:
+	vrb.bullet("Encoding start...");
 	tac.clock();
 	while((nset=bcf_read(fp, hdr, rec))==0) {
 		bcf_unpack(rec, BCF_UN_STR);
@@ -103,9 +103,8 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 		while(itr_gmap<max_gmap && gmap_pos_bp[itr_gmap]<rec->pos){ 
 			itr_gmap++;
 		}
-		if(itr_gmap==max_gmap) break;
 
-		if(itr_gmap){ //only consider SNPs comprised in recombinatino maps
+		if(itr_gmap && itr_gmap < max_gmap){ //only consider SNPs comprised in recombinatino maps
 			double rec_pos_cM = linear_conversion(rec->pos, gmap_pos_cM[itr_gmap-1], gmap_pos_cM[itr_gmap], gmap_pos_bp[itr_gmap-1], gmap_pos_bp[itr_gmap]);
 
 			// count the number of recombination happening
@@ -114,9 +113,9 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 				itr_recsite++;
 				nbr_of_recombinations++;
 			}
-			if(itr_recsite==max_recsite) break;
-			//step1. Permute haplotypes_positions depending on the number of recombination events
-			for(int i = 0; i<nbr_of_recombinations; i++){
+			if(itr_recsite<max_recsite){
+				//step1. Permute haplotypes_positions depending on the number of recombination events
+				for(int i = 0; i<nbr_of_recombinations; i++){
 				// FAIS GAFFE JE CRAINS QUE UN HAPLOTYPE PEUT RECOMBINER AVEC LUI MEME ET JE SAIS PAS SI C UN PBLM
 				int first_element=rng.getInt(n_samples*2), second_element=rng.getInt(n_samples*2);
 				int first_value=haplotypes_positions[first_element], second_value = haplotypes_positions[second_element];
@@ -127,29 +126,27 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 				if (out_rec!="None"){
 					rec_file << rec->pos;
 					rec_file << "\n";
+					}
 				}
+
+				
 			}
 
-			if (out_haplo!="None"){
-				for(int i =  0; i<n_samples*2; i++){ haplo_file << haplotypes_positions[i] << " "; }
-				haplo_file << "\n";
-			}
+		}
 
-			//step TO SOLVE BUG -> ALLELE FREQUENCY DOES NOT WORK WHEN USING HIGH VALUES OF GENERATION NUMBERN, LETS UNDERSTAND WHY
-			// check that haplotype_positions contain all possible number
+		//step2. Write genotypes in new order
+		for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[haplotypes_positions[i]]));
+		bcf_update_genotypes(out_hdr, rec, genotypes_out, n_samples*2);
+		if (bcf_write(out_fp, out_hdr, rec) < 0) vrb.error("Failing to write VCF/record");
+		SNPs+=1;
 
-			// check if new allele frequency is not the same anymore
+		if (out_haplo!="None"){
+			for(int i =  0; i<n_samples*2; i++){ haplo_file << haplotypes_positions[i] << " "; }
+			haplo_file << "\n";
+		}
 
-
-			//step2. Write genotypes in new order
-			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[haplotypes_positions[i]]));
-			bcf_update_genotypes(out_hdr, rec, genotypes_out, n_samples*2);
-			if (bcf_write(out_fp, out_hdr, rec) < 0) vrb.error("Failing to write VCF/record");
-			SNPs+=1;
-			if (SNPs%100000==0){
-				vrb.bullet(to_string(SNPs) + " SNPs written in " + stb.str(tac.rel_time()*1.0/1000, 2) + "s");
-			}
-
+		if (SNPs%100000==0){
+			vrb.bullet(to_string(SNPs) + " SNPs written in " + stb.str(tac.rel_time()*1.0/1000, 2) + "s");
 		}
 
 	}
@@ -244,9 +241,8 @@ void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int>
 		while(itr_gmap<max_gmap && gmap_pos_bp[itr_gmap]<rec->pos){ 
 			itr_gmap++;
 		}
-		if(itr_gmap==max_gmap) break;
 
-		if(itr_gmap){ //only consider SNPs comprised in recombinatino maps
+		if(itr_gmap && itr_gmap < max_gmap){ //only consider SNPs comprised in recombinatino maps
 			double rec_pos_cM = linear_conversion(rec->pos, gmap_pos_cM[itr_gmap-1], gmap_pos_cM[itr_gmap], gmap_pos_bp[itr_gmap-1], gmap_pos_bp[itr_gmap]);
 
 			// count the number of recombination happening
@@ -255,33 +251,38 @@ void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int>
 				itr_recsite++;
 				nbr_of_recombinations++;
 			}
-			if(itr_recsite==max_recsite) break;
-			//step1. Permute haplotypes_positions depending on the number of recombination events
-			for(int i = 0; i<nbr_of_recombinations; i++){
-				// FAIS GAFFE JE CRAINS QUE UN HAPLOTYPE PEUT RECOMBINER AVEC LUI MEME ET JE SAIS PAS SI C UN PBLM
-				int first_element=rng.getInt(n_samples*2), second_element=rng.getInt(n_samples*2);
-				int first_value=haplotypes_positions[first_element], second_value = haplotypes_positions[second_element];
-				haplotypes_positions[first_element] = second_value;
-				haplotypes_positions[second_element] = first_value;
+			if(itr_recsite < max_recsite){
+				//step1. Permute haplotypes_positions depending on the number of recombination events
+				for(int i = 0; i<nbr_of_recombinations; i++){
+					// FAIS GAFFE JE CRAINS QUE UN HAPLOTYPE PEUT RECOMBINER AVEC LUI MEME ET JE SAIS PAS SI C UN PBLM
+					int first_element=rng.getInt(n_samples*2), second_element=rng.getInt(n_samples*2);
+					int first_value=haplotypes_positions[first_element], second_value = haplotypes_positions[second_element];
+					haplotypes_positions[first_element] = second_value;
+					haplotypes_positions[second_element] = first_value;
 
-				//step1. bis Write the recombination event if --recvalid
-				if (out_rec!="None"){
-					rec_file << rec->pos;
-					rec_file << "\n";
+					//step1. bis Write the recombination event if --recvalid
+					if (out_rec!="None"){
+						rec_file << rec->pos;
+						rec_file << "\n";
+					}
+
 				}
+
+				update_original_pos(original_pos, haplotypes_positions);
+
 			}
 
-			update_original_pos(original_pos, haplotypes_positions);
 
-			//step2. Write genotypes in new order
-			for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[original_pos[i]]));
-			bcf_update_genotypes(out_hdr, rec, genotypes_out, n_samples*2);
-			if (bcf_write(out_fp, out_hdr, rec) < 0) vrb.error("Failing to write VCF/record");
-			SNPs+=1;
-			if (SNPs%100000==0){
-				vrb.bullet(to_string(SNPs) + " SNPs written in " + stb.str(tac.rel_time()*1.0/1000, 2) + "s");
-			}
+		}
 
+
+		//step2. Write genotypes in new order
+		for(int i = 0; i < n_samples*2; i++) genotypes_out[i] = bcf_gt_phased(bcf_gt_allele(gt_arr[original_pos[i]]));
+		bcf_update_genotypes(out_hdr, rec, genotypes_out, n_samples*2);
+		if (bcf_write(out_fp, out_hdr, rec) < 0) vrb.error("Failing to write VCF/record");
+		SNPs+=1;
+		if (SNPs%100000==0){
+			vrb.bullet(to_string(SNPs) + " SNPs written in " + stb.str(tac.rel_time()*1.0/1000, 2) + "s");
 		}
 
 	}
