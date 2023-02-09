@@ -1,4 +1,4 @@
-#  <p style="text-align: center;">RESHAPE</p>
+#  <p align="center">RESHAPE</p>
 
 ## Versions
 
