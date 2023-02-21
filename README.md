@@ -1,4 +1,4 @@
-# <p align="center">RESHAPE</p>
+# <img height="150" src="logo.png"/><p align="center">RESHAPE</p>
 
 ## Versions
 
@@ -11,7 +11,7 @@ RESHAPE is available under a MIT license. For more information please see the LI
 ?
 
 ## RESHAPE
-RESHAPE removes sample-level genetic information from a reference panel to create a synthetic reference panel. By providing it with a genetic map and the VCF/BCF of a reference panel, RESHAPE outputs a VCF/BCF of the same size containing where each haplotypes corresponds as a mosaic of the original haplotypes of the reference panel.
+RESHAPE removes sample-level genetic information from a reference panel to create a synthetic reference panel. By providing it with a genetic map and the VCF/BCF of a reference panel, RESHAPE outputs a VCF/BCF of the same size where each haplotypes corresponds to a mosaic of the original haplotypes of the reference panel.
 
 It takes as input:
 * --vcf: reference panel in the VCF or BCF file format
