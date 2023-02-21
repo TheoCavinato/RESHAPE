@@ -1,4 +1,4 @@
-# <img height="150" src="logo.png"/><p align="center">RESHAPE</p>
+# <p align="center"> <img height="150" src="logo.png"/> <br>RESHAPE </p>
 
 ## Versions
 
