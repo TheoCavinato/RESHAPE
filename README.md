@@ -7,9 +7,6 @@ Current release: v1.0.0. Release date: ?
 ## License
 RESHAPE is available under a MIT license. For more information please see the LICENSE.
 
-## Requirements
-?
-
 ## RESHAPE
 RESHAPE removes sample-level genetic information from a reference panel to create a synthetic reference panel. By providing it with a genetic map and the VCF/BCF of a reference panel, RESHAPE outputs a VCF/BCF of the same size where each haplotypes corresponds to a mosaic of the original haplotypes of the reference panel.
 
