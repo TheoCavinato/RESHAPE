@@ -43,13 +43,14 @@ double genotype_reader_writer::linear_conversion(double X, double cM_1, double c
 	return (((double)X-(double)bp_1)/((double)bp_2 - (double)bp_1))*( cM_2 - cM_1)+ cM_1;
 }
 
-void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo){
+void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo, int n_threads){
 	//-----------INITIALISE VCF TO READ---------------//
 	//Create input file descriptors
 	vrb.bullet("Creating file descriptor");
 
     //open original file "fvcfin"
     htsFile *fp = hts_open(fvcfin.c_str(), "r"); if ( !fp ) vrb.error("Failed to open: " + fvcfin + ".");
+	if (n_threads > 1) hts_set_threads(fp, n_threads);
 	bcf_hdr_t *hdr = bcf_hdr_read(fp); if ( !hdr ) vrb.error("Failed to parse header: " + fvcfin +".");
     //copy header to out_hdr
 	bcf_hdr_t * out_hdr = bcf_hdr_dup(hdr);
@@ -67,6 +68,7 @@ void genotype_reader_writer::encoding(string fvcfin, string fvcfout, vector<int>
 	if (fvcfout.size() > 3 && fvcfout.substr(fvcfout.size()-3) == "bcf")  file_format = "wb";
 
     htsFile * out_fp = hts_open(fvcfout.c_str(),file_format.c_str());
+	if (n_threads > 1) hts_set_threads(out_fp, n_threads);
 	if ( out_fp == NULL ) vrb.error("Can't write to " + fvcfout + ".");
 	bcf_hdr_add_sample(out_hdr, NULL);
     //write header copied before
@@ -181,13 +183,14 @@ void genotype_reader_writer::update_original_pos(vector<int> &orig_pos, vector<i
 	}
 }
 
-void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec){
+void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, int n_threads){
 	//-----------INITIALISE VCF TO READ---------------//
 	//Create input file descriptors
 	vrb.bullet("Creating file descriptor");
 
     //open original file "fvcfin"
     htsFile *fp = hts_open(fvcfin.c_str(), "r"); if ( !fp ) vrb.error("Failed to open: " + fvcfin + ".");
+	if (n_threads > 1) hts_set_threads(fp, n_threads);
 	bcf_hdr_t *hdr = bcf_hdr_read(fp); if ( !hdr ) vrb.error("Failed to parse header: " + fvcfin +".");
     //copy header to out_hdr
 	bcf_hdr_t * out_hdr = bcf_hdr_dup(hdr);
@@ -205,6 +208,7 @@ void genotype_reader_writer::decoding(string fvcfin, string fvcfout, vector<int>
 	if (fvcfout.size() > 3 && fvcfout.substr(fvcfout.size()-3) == "bcf")  file_format = "wb";
 
     htsFile * out_fp = hts_open(fvcfout.c_str(),file_format.c_str());
+	if (n_threads > 1) hts_set_threads(out_fp, n_threads);
 	if ( out_fp == NULL ) vrb.error("Can't write to " + fvcfout + ".");
 	bcf_hdr_add_sample(out_hdr, NULL);
     //write header copied before

@@ -40,8 +40,8 @@ public:
     //ROUTINES
     void set_n_samples(int number_of_samples);
     void shuffling();
-    void encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo);
-    void decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec);
+    void encoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, string out_haplo, int n_threads);
+    void decoding(string fvcfin, string fvcfout, vector<int> &gmap_pos_bp, vector<double> &gmap_pos_cM, vector<double> &recombination_sites, string out_rec, int n_threads);
 
 private:
     double linear_conversion(double X, double cM_1, double cM_2, int bp_1, int bp_2);

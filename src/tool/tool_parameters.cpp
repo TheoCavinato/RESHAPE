@@ -29,6 +29,7 @@ void tool::declare_options() {
 	opt_base.add_options()
 			("help", "Produce help message")
 			("seed", bpo::value<int>()->default_value(15052011), "Seed of the random number generator")
+			("threads", bpo::value< int>()->default_value(1), "Number of threads")
 			("gen", bpo::value<int>(), "Number of generations");
 
 	bpo::options_description opt_input ("Input files");

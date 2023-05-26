@@ -47,12 +47,15 @@ void tool::runMainTask() {
 	if (options["mode"].as <string>()=="encoding"){
 		GEN.encoding(options["vcf"].as <string>(), options["output"].as <string>(),
 		GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM,
-		options["recvalid"].as <string>(), options["haploprint"].as <string>());
+		options["recvalid"].as <string>(), options["haploprint"].as <string>(),
+		options["threads"].as <int>());
+
 	}
 	else if(options["mode"].as <string>()=="decoding"){
 		GEN.decoding(options["vcf"].as <string>(), options["output"].as <string>(),
 		GMAP.pos_bp, GMAP.pos_cm, REC_SITES.recombination_sites_cM,
-		options["recvalid"].as <string>());
+		options["recvalid"].as <string>(),
+		options["threads"].as <int>());
 	}
 	else{
 		vrb.error("Mode \"" + options["mode"].as <string>() + "\" unknown, please choose between encoding or decoding or leave default");
