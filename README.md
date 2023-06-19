@@ -1,5 +1,8 @@
 # <p align="center"> <img height="150" src="logo.png"/> <br>RESHAPE </p>
 
+## Paper
+For more information please read this [manuscript](https://www.biorxiv.org/content/10.1101/2023.04.07.535812v1.full.pdf+html) 
+
 ## Versions
 
 Current release: v1.0.0. Release date: ?
