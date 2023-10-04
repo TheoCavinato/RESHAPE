@@ -5,7 +5,7 @@ For more information please read this [manuscript](https://www.biorxiv.org/conte
 
 ## Versions
 
-Current release: v1.0.0. Release date: ?
+Current release: v1.0.0. Release date: April 07, 2023
 
 ## License
 RESHAPE is available under a MIT license. For more information please see the LICENSE.
