@@ -20,7 +20,7 @@ VPATH=$(shell for file in `find src -name *.cpp`; do echo $$(dirname $$file); do
 
 NAME=$(shell basename $(CURDIR))
 #BFILE=bin/GLIMPSE_$(NAME)
-#EXEFILE=bin/GLIMPSE_$(NAME)_static
+EXEFILE=bin/haploshuffling_static
 BFILE=bin/haploshuffling
 
 #CONDITIONAL PATH DEFINITON
@@ -85,12 +85,12 @@ wally: $(BFILE)
 
 static_exe: CXXFLAG=-O2
 static_exe: LDFLAG=-O2
-static_exe: HTSSRC=../..
-static_exe: HTSLIB_INC=$(HTSSRC)/htslib_minimal
-static_exe: HTSLIB_LIB=$(HTSSRC)/htslib_minimal/libhts.a
+static_exe: HTSSRC=$(HOME)/commands
+static_exe: HTSLIB_INC=$(HTSSRC)/htslib-1.9
+static_exe: HTSLIB_LIB=$(HTSSRC)/htslib-1.9/libhts.a
 static_exe: BOOST_INC=/usr/include
-static_exe: BOOST_LIB_IO=/usr/local/lib/libboost_iostreams.a
-static_exe: BOOST_LIB_PO=/usr/local/lib/libboost_program_options.a
+static_exe: BOOST_LIB_IO=/usr/lib/x86_64-linux-gnu/libboost_iostreams.a
+static_exe: BOOST_LIB_PO=/usr/lib/x86_64-linux-gnu/libboost_program_options.a
 static_exe: $(EXEFILE)
 
 #COMPILATION RULES
@@ -99,8 +99,8 @@ all: desktop
 $(BFILE): $(OFILE)
 	$(CXX) $(LDFLAG) $^ $(HTSLIB_LIB) $(BOOST_LIB_IO) $(BOOST_LIB_PO) -o $@ $(DYN_LIBS)
 
-#$(EXEFILE): $(OFILE)
-#	$(CXX) $(LDFLAG) -static -static-libgcc -static-libstdc++ -pthread -o $(EXEFILE) $^ $(HTSLIB_LIB) $(BOOST_LIB_IO) $(BOOST_LIB_PO) -Wl,-Bstatic $(DYN_LIBS)
+$(EXEFILE): $(OFILE)
+	$(CXX) $(LDFLAG) -static -static-libgcc -static-libstdc++ -pthread -o $(EXEFILE) $^ $(HTSLIB_LIB) $(BOOST_LIB_IO) $(BOOST_LIB_PO) -Wl,-Bstatic $(DYN_LIBS)
 
 obj/%.o: %.cpp $(HFILE)
 	$(CXX) $(CXXFLAG) -c $< -o $@ -Isrc -I$(HTSLIB_INC) -I$(BOOST_INC)
