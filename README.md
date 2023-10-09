@@ -26,3 +26,19 @@ And outputs a synthetic reference panel of the same size as the original referen
 ## Quickstart
 ./bin/haploshuffling --vcf $INPUT_FILE --region $CHR --output $OUTPUT --map $MAP --seed 13524 --gen 100
 
+## Installation
+
+### Build from source
+Building from source requires a version of GCC > 4.4.
+
+The following libraries are required:
+* HTSlib version >= 1.7
+* BOOST version >= 1.65 
+
+Make sure that the following standard library flags can be used by g++ on your system: *-lz -lpthread -lbz2 -llzma -lcurl -lcrypto*
+
+### Static binariesraries
+Building from source is not necessary as we provide the static binary at the release link:
+https://github.com/TheoCavinato/RESHAPE/releases/
+
+
