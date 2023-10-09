@@ -37,7 +37,7 @@ The following libraries are required:
 
 Make sure that the following standard library flags can be used by g++ on your system: *-lz -lpthread -lbz2 -llzma -lcurl -lcrypto*
 
-### Static binariesraries
+### Static binary
 Building from source is not necessary as we provide the static binary at the release link:
 https://github.com/TheoCavinato/RESHAPE/releases/
 
