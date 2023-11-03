@@ -33,8 +33,27 @@ Building from source requires a version of GCC > 4.4.
 
 The following libraries are required:
 * HTSlib version >= 1.7
-* BOOST version >= 1.65 
+* BOOST version >= 1.65
 
+To install htslib:
+```
+wget https://github.com/samtools/htslib/releases/download/1.16/htslib-1.16.tar.bz2
+tar -xf htslib-1.16.tar.bz2
+mv htslib-1.16 htslib
+cd htslib
+autoheader; autoconf; ./configure; #optional
+make
+```
+
+To install boost:
+```
+wget https://boostorg.jfrog.io/artifactory/main/release/1.73.0/source/boost_1_73_0.tar.bz2
+tar --bzip2 -xf boost_1_73_0.tar.bz2
+cd boost_1_73_0
+./bootstrap.sh --with-libraries=iostreams,program_options,serialization --prefix=../boost #where ../boost is your custom boost installation prefix
+./b2 install
+cd ../boost #change this to the folder you used as --prefix for the bootstrap script
+```
 Make sure that the following standard library flags can be used by g++ on your system: *-lz -lpthread -lbz2 -llzma -lcurl -lcrypto*
 
 ### Static binary
