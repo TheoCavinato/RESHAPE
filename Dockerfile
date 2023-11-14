@@ -7,12 +7,12 @@ LABEL org.opencontainers.image.licences="MIT"
 LABEL org.opencontainers.image.title="RESHAPE"
 LABEL org.opencontainers.image.authors="theo.cavinato@unil.ch"
 
-#COPY RESHAPE RESHAPE_DOCKER/
-COPY RESHAPE/bin/haploshuffling_static RESHAPE_DOCKER/bin/
+RUN apt-get update && apt-get install -y wget
 
-RUN mv RESHAPE_DOCKER/bin/haploshuffling_static /bin
-RUN chmod +x /bin/*
-RUN rm -rf RESHAPE_DOCKER
+RUN wget https://github.com/TheoCavinato/RESHAPE/releases/download/v1.0.0/haploshuffling_static && \
+cp haploshuffling_static bin/ && \
+chmod +x /bin/haploshuffling_static && \
+rm haploshuffling_static
 
 WORKDIR /root/
 
