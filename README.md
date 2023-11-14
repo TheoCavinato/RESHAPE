@@ -24,7 +24,9 @@ It takes as input:
 And outputs a synthetic reference panel of the same size as the original reference panel in the VCF or BCF file format.
 
 ## Quickstart
+```
 ./bin/haploshuffling --vcf $INPUT_FILE --region $CHR --output $OUTPUT --map $MAP --seed 13524 --gen 100
+```
 
 ## Installation
 
@@ -60,4 +62,14 @@ Make sure that the following standard library flags can be used by g++ on your s
 Building from source is not necessary as we provide the static binary at the release link:
 https://github.com/TheoCavinato/RESHAPE/releases/
 
+### Docker
+To obtain the docker container:
+```
+docker pull theocavinato/reshape
+docker run -it theocavinato/reshape
+```
+Then, you can use reshape by using
+```
+haploshuffling_static
+```
 
