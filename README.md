@@ -58,6 +58,9 @@ cd ../boost #change this to the folder you used as --prefix for the bootstrap sc
 ```
 Make sure that the following standard library flags can be used by g++ on your system: *-lz -lpthread -lbz2 -llzma -lcurl -lcrypto*
 
+The installation should take less than a minute once the other libraries are installed.
+To test if the software is correctly installed you can run the tool on the example dataset: `bash validation.sh`. This test should take less than a minute.
+
 ### Static binary
 Building from source is not necessary as we provide the static binary at the release link:
 https://github.com/TheoCavinato/RESHAPE/releases/
